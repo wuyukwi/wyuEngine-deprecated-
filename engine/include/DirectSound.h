@@ -1,79 +1,77 @@
 ﻿/*********************************************************************************
 
   *FileName: DirectSound.h
-            コウ  キガク
+			コウ  キガク
   *Author:  Huang QiYue
   *Version:  1.0
   *Date:  2022/04/12
 
 **********************************************************************************/
 
-#ifndef _DIRECTSOUND_H_
-#define _DIRECTSOUND_H_
-
-#define INITGUID
+#pragma once
 
 #include<Windows.h>
 #include <string>
 #include <vector>
+
+#include <xaudio2.h>
+
 #include"SoundInterface.h"
 
-#include <XAudio2.h>
-struct AUDIO_STATE
+struct AudioState
 {
-    int Repeats;
-    std::string command;
-    std::string fileName;
-    IXAudio2SourceVoice* pSourceVoice; // ソースボイス
-    BYTE* pDataAudio; // オーディオデータ
-    DWORD SizeAudio; // オーディオデータサイズ
+	int Repeats = 0;	//ループ
+	std::string command;	//コマンド
+	std::string fileName;	//ファイル名
+	IXAudio2SourceVoice* pSourceVoice = nullptr; // ソースボイス
+	BYTE* pDataAudio = nullptr; // オーディオデータ
+	DWORD SizeAudio = 0; // オーディオデータサイズ
 };
 
 class CDMSoundObject : public SoundInterface
 {
 public:
-    CDMSoundObject();
-    ~CDMSoundObject() override { Shutdown(); }
+	CDMSoundObject();
+	~CDMSoundObject() override = default;
 
-    bool Initialize(std::string& filepath) override;
-    bool AddSound(const char* sound_file, int numRepeats, const char* command) override;
-    bool SetupSoundParameters(int id, float dopplerFactor, float rolloffFactor, float minDist, float maxDist) override;
+	bool Initialize(std::string& filepath) override;
+	bool AddSound(const char* sound_file, int numRepeats, const char* command) override;
+	bool SetupSoundParameters(int id, float dopplerFactor, float rolloffFactor, float minDist, float maxDist) override;
 
-    bool Play(const char* command) override;
-    void Play(int32_t id) override;
-    void UpdateSoundPosition(int id, float x, float y, float z) override;
-    bool Stop(const char* command) override;
-    void Stop(int32_t id) override;
+	bool Play(const char* command) override;
+	void Play(int32_t id) override;
+	void UpdateSoundPosition(int id, float x, float y, float z) override;
+	bool Stop(const char* command) override;
+	void Stop(int32_t id) override;
 
-    void Shutdown() override;
+	void Shutdown() override;
 
 private:
-    std::string m_filePath;
-    bool m_comInit;
-    IXAudio2* m_pXAudio2; // XAudio2オブジェクトへのインターフェイス
-    IXAudio2MasteringVoice* pMasterVoice; // マスターボイス
-    std::vector<AUDIO_STATE> m_audioState;
+	std::string m_filePath;
+	bool m_comInit;
+	IXAudio2* m_pXAudio2; // XAudio2オブジェクトへのインターフェイス
+	IXAudio2MasteringVoice* pMasterVoice; // マスターボイス
+	std::vector<AudioState> m_audioState;
 };
 
 class CDirectMusicSystem : public SoundSystemInterface
 {
 public:
-    CDirectMusicSystem();
-    ~CDirectMusicSystem() override { Shutdown(); }
+	CDirectMusicSystem();
+	~CDirectMusicSystem() override = default;
 
-    bool Initialize(const char* filepath) override;
-    bool AddSound(const char* soundfile, int numRepeats, int* id) override;
-    bool SetupSoundParameters(int id, float dopplerFactor, float rolloffFactor, float minDist, float maxDist) override;
+	bool Initialize(const char* filepath) override;
+	bool AddSound(const char* soundfile, int numRepeats, int* id) override;
+	bool SetupSoundParameters(int id, float dopplerFactor, float rolloffFactor, float minDist, float maxDist) override;
 
-    void Play(int id) override;
-    void UpdateSoundPosition(int id, float x, float y, float z) override;
-    void Stop(int id) override;
-    void Shutdown() override;
+	void Play(int id) override;
+	void UpdateSoundPosition(int id, float x, float y, float z) override;
+	void Stop(int id) override;
+	void Shutdown() override;
 
 private:
-    CDMSoundObject* m_soundList;
+	CDMSoundObject* m_soundList;
 };
 
 bool CreateDMSound(SoundInterface** pObj);
 
-#endif _DIRECTSOUND_H_

@@ -1,4 +1,4 @@
 @echo off
 
-cmake -B build1
+cmake -B build
 #cmake --build build --config Debug
