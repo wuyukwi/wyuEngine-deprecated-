@@ -1,5 +1,4 @@
 ﻿#include <algorithm>
-#include <filesystem>
 #include <functional>
 
 #include "GameScene.h"

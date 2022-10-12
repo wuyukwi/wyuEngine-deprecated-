@@ -1,7 +1,7 @@
 ﻿/*********************************************************************************
 
   *FileName: DirectSound.h
-			コウ  キガク
+            コウ  キガク
   *Author:  Huang QiYue
   *Version:  1.0
   *Date:  2022/04/12
@@ -11,67 +11,58 @@
 #pragma once
 
 #include<Windows.h>
-#include <string>
-#include <vector>
+#include <unordered_map>
 
+#define XAUDIO2_HELPER_FUNCTIONS
 #include <xaudio2.h>
 
-#include"SoundInterface.h"
+#include"json11.hpp"
+#include"SoundManagerInterface.h"
 
 struct AudioState
 {
-	int Repeats = 0;	//ループ
-	std::string command;	//コマンド
-	std::string fileName;	//ファイル名
-	IXAudio2SourceVoice* pSourceVoice = nullptr; // ソースボイス
-	BYTE* pDataAudio = nullptr; // オーディオデータ
-	DWORD SizeAudio = 0; // オーディオデータサイズ
+    std::string name;	//名前
+    std::string path;	//ファイルの相対パス
+    IXAudio2SourceVoice* pSourceVoice = nullptr; // ソースボイス
+    XAUDIO2_BUFFER buffer{};
+    BYTE* pDataAudio = nullptr; // オーディオデータ
 };
 
-class CDMSoundObject : public SoundInterface
+class XAudioSoundManager : public SoundManagerInterface
 {
 public:
-	CDMSoundObject();
-	~CDMSoundObject() override = default;
+    XAudioSoundManager();
+    ~XAudioSoundManager() override = default;
 
-	bool Initialize(std::string& filepath) override;
-	bool AddSound(const char* sound_file, int numRepeats, const char* command) override;
-	bool SetupSoundParameters(int id, float dopplerFactor, float rolloffFactor, float minDist, float maxDist) override;
+    bool Initialize(const std::string& path) override;
 
-	bool Play(const char* command) override;
-	void Play(int32_t id) override;
-	void UpdateSoundPosition(int id, float x, float y, float z) override;
-	bool Stop(const char* command) override;
-	void Stop(int32_t id) override;
+    bool Play(const std::string& name) override;
+    bool Stop(const std::string& name) override;
+    void StopALL() override;
 
-	void Shutdown() override;
+    bool LoadJsonFile(const std::string& file_name) override;
 
-private:
-	std::string m_filePath;
-	bool m_comInit;
-	IXAudio2* m_pXAudio2; // XAudio2オブジェクトへのインターフェイス
-	IXAudio2MasteringVoice* pMasterVoice; // マスターボイス
-	std::vector<AudioState> m_audioState;
-};
+    void SoundMapReleased() override;
 
-class CDirectMusicSystem : public SoundSystemInterface
-{
-public:
-	CDirectMusicSystem();
-	~CDirectMusicSystem() override = default;
+    float GetVolume(const std::string& name = "null") override;
+    void SetVolume(float Decibels, const std::string& name = "null") override;
 
-	bool Initialize(const char* filepath) override;
-	bool AddSound(const char* soundfile, int numRepeats, int* id) override;
-	bool SetupSoundParameters(int id, float dopplerFactor, float rolloffFactor, float minDist, float maxDist) override;
-
-	void Play(int id) override;
-	void UpdateSoundPosition(int id, float x, float y, float z) override;
-	void Stop(int id) override;
-	void Shutdown() override;
+    void Shutdown() override;
 
 private:
-	CDMSoundObject* m_soundList;
+    bool LoadSound(const json11::Json& json);
+
+    std::string m_filePath;
+    bool m_comInit;
+
+    IXAudio2* m_pXAudio2 = nullptr; // XAudio2オブジェクトへのインターフェイス
+    IXAudio2MasteringVoice* m_pMasterVoice = nullptr; // マスターボイス
+    // IXAudio2SubmixVoice* m_pSFXSubmixVoice; // SFX ボイス
+    // IXAudio2SubmixVoice* m_pBGMSubmixVoice; // BGM ボイス
+
+    std::unordered_map<std::string, AudioState> m_audioMap;
 };
 
-bool CreateDMSound(SoundInterface** pObj);
+
+bool CreateDMSound(SoundManagerInterface** pObj);
 

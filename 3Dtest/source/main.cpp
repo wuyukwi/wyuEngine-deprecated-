@@ -1,7 +1,7 @@
 ﻿/*********************************************************************************
 
   *FileName: main.cpp
-            コウ  キガク
+			コウ  キガク
   *Author:  Huang QiYue
   *Version:  1.0
   *Date:  2022/04/02
@@ -16,22 +16,22 @@ gameEngine* g_pEngine = nullptr;
 //{
 int main(int argc, char** argv)
 {
-    char result[MAX_PATH];
-    const std::string filename(result, GetModuleFileName(nullptr, result, MAX_PATH));
+	char result[MAX_PATH];
+	const std::string filename(result, GetModuleFileName(nullptr, result, MAX_PATH));
 
-    std::cout << GetPath(filename) << std::endl;
+	std::cout << GetPath(filename) << std::endl;
 
-    g_pEngine = new gameEngine();
+	g_pEngine = new gameEngine();
 
-    SceneManager* scene_manager = new GameManager();
+	SceneManager* scene_manager = new GameManager();
 
-    g_pEngine->InitializeEngine(GetPath(filename), "setting.ini", scene_manager);
+	g_pEngine->InitializeEngine(GetPath(filename), "setting.ini", scene_manager);
 
-    g_pEngine->Run();
+	g_pEngine->Run();
 
-    g_pEngine->ShutdownEngine();
+	g_pEngine->ShutdownEngine();
 
-    return 0;
+	return 0;
 }
 
 

@@ -26,7 +26,7 @@ public:
 	GfxConfiguration* GetConfig() const;
 	ConfigManager* GetPathManager() const;
 	CInputInterface* GetInput() const;
-	SoundInterface* GetSoundManager() const;
+	SoundManagerInterface* GetSoundManager() const;
 	WindowsApplication* GetWinapp()const;
 
 private:
@@ -37,7 +37,7 @@ private:
 	WindowsApplication* m_WinApp = nullptr;//ウィンドウズアプリケーションクラス
 	RenderInterface* m_Renderer = nullptr;//描画全般管理するクラス
 	CInputInterface* m_Input = nullptr;//inputマネージャー
-	SoundInterface* m_Sound = nullptr;//音声マネージャー
+	SoundManagerInterface* m_Sound = nullptr;//音声マネージャー
 	GfxConfiguration* m_Config = nullptr;//設定保存用クラス
 
 	int32_t m_arialID;       //フォントid

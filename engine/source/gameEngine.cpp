@@ -42,6 +42,11 @@ bool gameEngine::InitializeEngine(const std::string& config_file_path, const std
 	{
 		return false;
 	}
+	if (!m_Sound->Initialize(m_pConfigManager->GetSoundFolder()))
+	{
+		return false;
+	}
+
 
 	m_pSceneManager->Start();
 
@@ -88,9 +93,9 @@ void gameEngine::ShutdownEngine()
 		m_WinApp = nullptr;
 	}
 
-	SAFE_DELETE(m_pConfigManager);
-	SAFE_DELETE(m_pTimer);
-	SAFE_DELETE(m_Config);
+	SAFE_DELETE(m_pConfigManager)
+		SAFE_DELETE(m_pTimer)
+		SAFE_DELETE(m_Config)
 }
 
 void gameEngine::Run() const
@@ -146,7 +151,7 @@ CInputInterface* gameEngine::GetInput() const
 	return m_Input;
 }
 
-SoundInterface* gameEngine::GetSoundManager() const
+SoundManagerInterface* gameEngine::GetSoundManager() const
 {
 	return m_Sound;
 }

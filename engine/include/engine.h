@@ -18,7 +18,7 @@
 #include "light.h"
 #include "InputInterface.h"
 #include "DirectInput.h"
-#include "SoundInterface.h"
+#include "SoundManagerInterface.h"
 #include "DirectSound.h"
 #include "SceneManager.h"
 #include "Timer.h"

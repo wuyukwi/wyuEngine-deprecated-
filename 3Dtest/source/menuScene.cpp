@@ -43,7 +43,8 @@ void MenuScene::Start()
     //test->SetTextureFrames(Vector2i{ 0,0 });
     //m_pStartButton->AddChild(test);
 
-    g_pEngine->GetSoundManager()->Play(0);
+    g_pEngine->GetSoundManager()->LoadJsonFile("SoundList.json");
+    g_pEngine->GetSoundManager()->Play("game_bgm");
 
     // g_pEngine->GetRenderer()->SetD3D9RenderState(RenderState::SHADE_WIRETRI);
      // g_pEngine->GetRenderer()->SetD3D9RenderState(RenderState::SHADE_POINTS);
@@ -77,6 +78,12 @@ void MenuScene::Tick(float delta)
     static float rot = 0.f;
     SliderFloat("rot", &rot, -PI, PI);
     m_pBackGround->SetRot(rot);
+
+    static float volume = 0.0f;
+    SliderFloat("volume", &volume, -50.0f, 40.0f);
+    // g_pEngine->GetSoundManager()->SetVolume(volume);
+    Text("volume :%f", g_pEngine->GetSoundManager()->GetVolume());
+    g_pEngine->GetSoundManager()->SetVolume(volume, "game_bgm");
 
     static float color[4] = { 255,255,255,255 };
     ColorEdit4("color RGBA", &color[0]);
@@ -233,7 +240,7 @@ void MenuScene::ShutDown()
         SAFE_DELETE(m_pExitButton)
         SAFE_DELETE(test)
         m_nextScene = SceneType::Menu_Scene;
-    g_pEngine->GetSoundManager()->Stop(0);
+    g_pEngine->GetSoundManager()->StopALL();
     Scene::ShutDown();
 }
 
