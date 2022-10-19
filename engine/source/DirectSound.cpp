@@ -174,10 +174,6 @@ bool XAudioSoundManager::LoadJsonFile(const string& file_name)
     buffer << asset_json_file.rdbuf();
     const string asset_json_text(buffer.str());
 
-#if _DEBUG
-    cout << asset_json_text << endl;
-#endif
-
     // jsonオブジェクトに解析し
     string error;
     const Json SoundJson = Json::parse(asset_json_text, error);
@@ -190,9 +186,6 @@ bool XAudioSoundManager::LoadJsonFile(const string& file_name)
 
     if (!SoundJson["BGM"].is_null())
     {
-#if _DEBUG
-        cout << SoundJson["BGM"].dump() << endl;
-#endif
         // サウンド読み込む
         for (auto& bgm : SoundJson["BGM"].array_items())
         {
@@ -204,9 +197,6 @@ bool XAudioSoundManager::LoadJsonFile(const string& file_name)
     }
     if (!SoundJson["SFX"].is_null())
     {
-#if _DEBUG
-        cout << SoundJson["SFX"].dump() << endl;
-#endif
         // サウンド読み込む
         for (auto& sfx : SoundJson["SFX"].array_items())
         {
@@ -310,9 +300,6 @@ void XAudioSoundManager::Shutdown()
 
 bool XAudioSoundManager::LoadSound(const Json& json)
 {
-#if _DEBUG
-    cout << "LoadSound Json\n" << json.dump() << endl;
-#endif
     AudioState temp;
 
     DWORD dwChunkSize = 0;

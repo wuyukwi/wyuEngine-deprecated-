@@ -5,8 +5,11 @@ bool CRay::Intersect(Vector3f& pos, float radius, float* dist) const
 {
     //　方向を算出
     const Vector3f RSDir = pos - m_origin;
-
+    
+    //　長さを算出
     const float RayToSphereLength = DotProduct(RSDir, RSDir);
+
+    //　内積を算出
     const float IntersectPoint = DotProduct(RSDir, m_direction);
 
     // 当たってない場合

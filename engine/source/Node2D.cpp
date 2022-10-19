@@ -11,8 +11,8 @@ Sprite::~Sprite()
     std::cout << "~Sprite()" << std::endl;
 }
 
-Sprite::Sprite(int32_t key, const std::string& tex_name) :
-    m_texName(tex_name)
+Sprite::Sprite(int32_t key, std::string tex_name) :
+    m_texName(std::move(tex_name))
 {
 #if _DEBUG
     std::cout << "Sprite()" << std::endl;

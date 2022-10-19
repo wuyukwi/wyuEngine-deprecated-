@@ -1,0 +1,8 @@
+add_subdirectory(glfw)
+add_subdirectory(glad)
+add_subdirectory(stb)
+add_subdirectory(glm-0.9.9.8)
+set_target_properties(glad PROPERTIES FOLDER "3rdparty")
+set_target_properties(glfw PROPERTIES FOLDER "3rdparty")
+set_target_properties(stb PROPERTIES FOLDER "3rdparty")
+set_target_properties(glm PROPERTIES FOLDER "3rdparty")

@@ -33,6 +33,7 @@ set(d3dx9_lib ${THIRD_PARTY_DIR}/d3d9/lib/x64/d3dx9.lib)
 set(dinput8_lib ${THIRD_PARTY_DIR}/d3d9/lib/x64/dinput8.lib)
 set(xinput.lib ${THIRD_PARTY_DIR}/d3d9/lib/x64/xinput.lib)
 set(dxguid_lib ${THIRD_PARTY_DIR}/d3d9/lib/x64/dxguid.lib)
+
 set(xaudio2_lib xaudio2.lib)
 
 target_link_libraries(${TARGET_NAME} PUBLIC ${d3d9_lib})
@@ -40,8 +41,16 @@ target_link_libraries(${TARGET_NAME} PUBLIC ${d3dx9_lib})
 target_link_libraries(${TARGET_NAME} PUBLIC ${dinput8_lib})
 target_link_libraries(${TARGET_NAME} PUBLIC ${xinput.lib})
 target_link_libraries(${TARGET_NAME} PUBLIC ${dxguid_lib})
-target_link_libraries(${TARGET_NAME} PUBLIC ${xaudio2_lib})
+
+target_link_libraries(${TARGET_NAME} PUBLIC xaudio2.lib)
 target_link_libraries(${TARGET_NAME} PUBLIC json11)
+#opengl
+target_link_libraries(${TARGET_NAME} PUBLIC glfw)
+target_link_libraries(${TARGET_NAME} PUBLIC glad)
+target_link_libraries(${TARGET_NAME} PUBLIC opengl32.lib)
+target_link_libraries(${TARGET_NAME} PUBLIC stb)
+target_link_libraries(${TARGET_NAME} PUBLIC glm)
+
 #target_link_libraries(${TARGET_NAME} PUBLIC Jolt)
 
 if(IMGUI)
@@ -52,5 +61,7 @@ endif()
 target_include_directories(${TARGET_NAME}
 PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}/3rdparty
 	${THIRD_PARTY_DIR}/d3d9/include
 )
+

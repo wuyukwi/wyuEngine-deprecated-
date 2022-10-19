@@ -11,6 +11,7 @@
 #ifndef _VERTEX_H_
 #define _VERTEX_H_
 
+#include "math/Vector.h"
 
 struct stVector
 {
@@ -61,6 +62,30 @@ struct NodeVertex2D
         this->x = x; this->y = y; this->z = z; this->rhw = 1.0f;
         this->color = color;
         this->tu = tu; this->tv = tv;
+    }
+};
+
+struct NodeVertex3D
+{
+    Vector3f pos{};
+    Vector3f nor{};
+    Vector2f tex{};
+
+    NodeVertex3D()
+        = default;
+
+    NodeVertex3D(Vector3f pos, Vector2f tex)
+    {
+        this->pos = pos;
+        this->nor = Vector3f{ 0.0f,1.0f,0.0f };
+        this->tex = tex;
+    }
+
+    NodeVertex3D(Vector3f pos, Vector3f nor, Vector2f tex)
+    {
+        this->pos = pos;
+        this->nor = nor;
+        this->tex = tex;
     }
 };
 

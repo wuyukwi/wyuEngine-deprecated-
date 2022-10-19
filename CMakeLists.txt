@@ -33,7 +33,5 @@ add_subdirectory(engine)
 #add_subdirectory(game)
 add_subdirectory(3Dtest)
 
-#add_subdirectory(CHAIN&CHANGE)
 add_subdirectory(test)
-#add_subdirectory(touchNumbers)
-#add_subdirectory(touchNumbersClient)
+add_subdirectory(LearnOpenGl)

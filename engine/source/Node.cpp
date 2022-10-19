@@ -98,7 +98,7 @@ void Node::Start()
     }
 }
 
-void Node::Tick(float delta)
+void Node::Tick(float deltaTime)
 {
     // 前の位置と移動した距離を保存する
     m_displacedPos = m_pos - m_oldPos;
@@ -122,7 +122,7 @@ void Node::Tick(float delta)
         else
         {
             (*it)->AddPos(m_displacedPos);
-            (*it)->Tick(delta);
+            (*it)->Tick(deltaTime);
 
             ++it;
         }

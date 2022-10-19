@@ -73,7 +73,7 @@ public:
 
     virtual void Start();
 
-    virtual void Tick(float delta);
+    virtual void Tick(float deltaTime);
 
     virtual int32_t Getkey();
 };

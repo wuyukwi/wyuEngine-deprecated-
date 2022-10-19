@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 #include <string>
+
+#include "light.h"
 #include "Scene.h"
 #include "sceneType.h"
 #include "Node3D.h"
@@ -24,8 +26,9 @@ private:
     CameraNode* m_camera = nullptr;
     Node3D* m_model = nullptr;
     AnimationNode3D* m_ani3D = nullptr;
+    TerrainNode* m_terrain = nullptr;
+    stLight m_light{};
 
-    Matrix4x4f m_worldMat = {};
     SceneType m_nextScene = SceneType::Game_Scene;
     float m_time = 0.0f;
     int32_t m_timeCount = 0;

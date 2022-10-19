@@ -203,7 +203,7 @@ std::ostream& operator<<(std::ostream& out, TT<T> vector) {
 
 template <template <typename> class TT, typename T>
 TT<T> VectorScale(const TT<T>& v, float scale) {
-    size_t count = ElementCount(v.data);
+    const size_t count = ElementCount(v.data);
     TT<T> result;
     for (size_t i = 0; i < count; ++i) {
         result[i] = v[i] * scale;
@@ -213,7 +213,7 @@ TT<T> VectorScale(const TT<T>& v, float scale) {
 
 template <template<typename> class TT, typename T>
 void VectorAdd(TT<T>& result, const TT<T>& vec1, const TT<T>& vec2) {
-    size_t count = ElementCount(result.data);
+    const size_t count = ElementCount(result.data);
     for (size_t i = 0; i < count; ++i) {
         result[i] = vec1[i] + vec2[i];
     }
@@ -257,7 +257,7 @@ template <template<typename>class TT, typename T>
 inline void Normalize(TT<T>& result)
 {
     T length;
-    size_t count = ElementCount(result.data);
+    const size_t count = ElementCount(result.data);
     length = DotProduct(result, result);
     length = 1.0f / sqrt(length);
     for (size_t i = 0; i < count; ++i) {
@@ -268,7 +268,7 @@ inline void Normalize(TT<T>& result)
 template <template<typename> class TT, typename T>
 inline T Distance(const TT<T>& vec1, const TT<T>& vec2) {
     T dis = 0;
-    size_t count = ElementCount(vec1.data);
+    const size_t count = ElementCount(vec1.data);
     for (size_t i = 0; i < count; ++i) {
         dis += (vec1[i] - vec2[i]) * (vec1[i] - vec2[i]);
     }
@@ -280,7 +280,7 @@ template <template<typename> class TT, typename T>
 inline T VectorLength(const TT<T>& vec1)
 {
     T dis = 0;
-    size_t count = ElementCount(vec1.data);
+    const size_t count = ElementCount(vec1.data);
     for (size_t i = 0; i < count; ++i) {
         dis += (vec1[i]) * (vec1[i]);
     }
@@ -293,9 +293,9 @@ inline Quaternion operator*(const Quaternion q1, const Quaternion q2)
     Vector3f v1(q1.x, q1.y, q1.z);
     Vector3f v2(q2.x, q2.y, q2.z);
 
-    Vector3f v1v2 = CrossProduct(v1, v2) + v1 * q2.w + v2 * q1.w;
-    float real = q1.w * q2.w - DotProduct(v1, v2);
+    const Vector3f v1v2 = CrossProduct(v1, v2) + v1 * q2.w + v2 * q1.w;
+    const float real = q1.w * q2.w - DotProduct(v1, v2);
 
-    Quaternion ret(v1v2.x, v1v2.y, v1v2.z, real);
+    const Quaternion ret(v1v2.x, v1v2.y, v1v2.z, real);
     return ret;
 }

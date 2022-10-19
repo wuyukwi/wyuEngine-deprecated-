@@ -8,7 +8,7 @@ public:
     CRay(Vector3f origin, Vector3f direction) :m_origin(origin), m_direction(direction) {}
 
     /**
-     * \brief レイの当たり判定
+     * \brief レイの相交判定
      * \param pos ベクトルの位置
      * \param radius 半径
      * \param dist 距離

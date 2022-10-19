@@ -33,10 +33,10 @@ struct stD3D9StaticBuffer
 
     LPDIRECT3DVERTEXBUFFER9 vbPtr;
     LPDIRECT3DINDEXBUFFER9 ibPtr;
-    size_t numVerts;
-    size_t numIndices;
-    size_t stride;
-    size_t fvf;
+    int32_t numVerts;
+    int32_t numIndices;
+    int32_t stride;
+    int32_t fvf;
     PrimType primType;
 };
 
@@ -83,8 +83,8 @@ public:
     void SetLight(stLight& light, uint32_t index) override;
     void DisableLight(size_t index) override;
 
-    bool SetMultiSaple(int32_t samples)  override;
-    void EnableMultiSaple(bool samples) override;
+    bool SetMultiSample(int32_t samples)  override;
+    void EnableMultiSample(bool samples) override;
 
     void SetD3D9RenderState(RenderState state) override;
     void SetDepthTesting(RenderState state) override;
@@ -114,9 +114,9 @@ public:
 
     // スタティックバファ作成関数
     int CreateStaticBuffer(VertexType, PrimType,
-        size_t totalVerts, size_t totalIndices,
-        size_t stride, void** data, size_t* indices,
-        int* staticId) override;
+        int32_t totalVerts, int32_t totalIndices,
+        int32_t stride, void** data, int16_t* indices,
+        int32_t* staticId) override;
 
     void SetStaticBuffer(int32_t staticId, void** data) const override;
 
@@ -164,9 +164,9 @@ private:
     D3DXCOLOR m_Color;
     LPDIRECT3D9 m_Direct3D;
     LPDIRECT3DDEVICE9 m_Device;
-    D3DDISPLAYMODE m_d3ddm;
-    D3DPRESENT_PARAMETERS m_d3dpp;
-    D3DCAPS9 m_caps;
+    D3DDISPLAYMODE m_d3ddm{};
+    D3DPRESENT_PARAMETERS m_d3dpp{};
+    D3DCAPS9 m_caps{};
 
     bool m_renderingScene;
 

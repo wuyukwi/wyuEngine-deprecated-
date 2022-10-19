@@ -44,8 +44,8 @@ public:
     virtual void SetLight(stLight& light, uint32_t index) = 0;
     virtual void DisableLight(size_t index) = 0;
 
-    virtual bool SetMultiSaple(int32_t samples) = 0;
-    virtual void EnableMultiSaple(bool samples) = 0;
+    virtual bool SetMultiSample(int32_t samples) = 0;
+    virtual void EnableMultiSample(bool samples) = 0;
 
     virtual void SetD3D9RenderState(RenderState state) = 0;
     virtual void SetDepthTesting(RenderState state) = 0;
@@ -74,9 +74,9 @@ public:
     virtual void CalculateOrthoMatrix(float n, float f) = 0;
 
     virtual int CreateStaticBuffer(VertexType, PrimType,
-        size_t totalVerts, size_t totalIndices,
-        size_t stride, void** data, size_t* indices,
-        int* staticId) = 0;
+        int32_t totalVerts, int32_t totalIndices,
+        int32_t stride, void** data, int16_t* indices,
+        int32_t* staticId) = 0;
 
     virtual void SetStaticBuffer(int32_t staticId, void** data) const = 0;
 

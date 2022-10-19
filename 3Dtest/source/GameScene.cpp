@@ -4,7 +4,6 @@
 #include "GameScene.h"
 #include "main.h"
 #include "json11.hpp"
-#include "light.h"
 
 using namespace std;
 using namespace json11;
@@ -20,21 +19,26 @@ void GameScene::Start()
     m_camera->SetPos(Vector3f{ -210.0f,120.0f,-130.0f });
     this->AddChild(m_camera);
 
-    m_model = new Node3D("model/bigship1.x");
+    m_model = new ModelNode("model/bigship1.x");
     this->AddChild(m_model);
+    //   m_model->SetIsRender(false);
 
     m_ani3D = new AnimationNode3D("model/man/man.x");
     this->AddChild(m_ani3D);
+    // m_ani3D->SetIsRender(false);
+
+    m_terrain = new TerrainNode("gameScene/coastMountain64.raw", 64, 64, 10, 0.5f);
+    m_terrain->SetTexture("test.png");
+    this->AddChild(m_terrain);
 
     const float width = g_pEngine->GetConfig()->screenWidth;
     const float height = g_pEngine->GetConfig()->screenHeight;
 
     Vector3f dir(1.0f, -1.0f, 1.0f);
-    Vector4f col(1.0f, 1.0f, 1.0f, 1.0f);
-    stLight light;
-    light.InitDirectionalLight(dir, col);
+    Color col(1.0f, 1.0f, 1.0f, 1.0f);
+    m_light.InitDirectionalLight(dir, col);
 
-    g_pEngine->GetRenderer()->SetLight(light, 0);
+    g_pEngine->GetRenderer()->SetLight(m_light, 0);
     g_pEngine->GetRenderer()->CalculateProjMatrix(PI / 4, 10.0f, 10000.0f);
 
     Scene::Start();
@@ -206,6 +210,7 @@ void GameScene::Tick(float delta)
     }
 
 
+    m_camera->SetPosY(m_terrain->getHeight(m_camera->GetCameraPos().x, m_camera->GetCameraPos().y) + 5.0f);
 
     Scene::Tick(delta);
 }

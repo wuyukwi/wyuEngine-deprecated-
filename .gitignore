@@ -3,7 +3,7 @@ build1/
 test/
 bin/
 game/
-asset/
+#asset/
 cpm_modules/
 CPM_modules/
 CPM_*.cmake

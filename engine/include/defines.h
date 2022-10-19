@@ -30,7 +30,7 @@
 // Vertex formats.
 #define FVF_RHW     2
 #define FVF_2D      3
-#define FVF_3D      3
+#define FVF_3D      4
 
 // Types of controls we support.
 #define UGP_GUI_STATICTEXT 1

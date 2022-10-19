@@ -33,9 +33,9 @@ bool CreateD3DRenderer(RenderInterface** pObj)
 
 #define D3DFVF_RHW (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 #define D3DFVF_2D (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
-#define D3DFVF_3D (D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+#define D3DFVF_3D (D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1)
 
-size_t CreateD3DFVF(size_t flags)
+size_t CreateD3DFVF(int32_t flags)
 {
     size_t fvf = 0;
 
@@ -46,6 +46,9 @@ size_t CreateD3DFVF(size_t flags)
         break;
     case FVF_2D:
         fvf = D3DFVF_2D;
+        break;
+    case FVF_3D:
+        fvf = D3DFVF_3D;
         break;
     default:
         fvf = NULL;
@@ -59,8 +62,8 @@ D3D9Renderer::D3D9Renderer()
 {
     m_Color = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
 
-    m_Direct3D = NULL;
-    m_Device = NULL;
+    m_Direct3D = nullptr;
+    m_Device = nullptr;
     ZeroMemory(&m_d3dpp, sizeof(m_d3dpp));
     ZeroMemory(&m_d3ddm, sizeof(m_d3ddm));
     ZeroMemory(&m_caps, sizeof(m_caps));
@@ -71,8 +74,7 @@ D3D9Renderer::D3D9Renderer()
 }
 
 D3D9Renderer::~D3D9Renderer()
-{
-}
+= default;
 
 
 bool D3D9Renderer::Initialize(WinHWND mainWin)
@@ -124,7 +126,7 @@ bool D3D9Renderer::Initialize(WinHWND mainWin)
     m_d3dpp.BackBufferCount = 1;
     m_d3dpp.EnableAutoDepthStencil = TRUE;
     m_d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
-    SetMultiSaple(static_cast<int32_t>(g_pEngine->GetConfig()->msaaSamples));
+    SetMultiSample(static_cast<int32_t>(g_pEngine->GetConfig()->msaaSamples));
 
 
     if (FAILED(
@@ -170,10 +172,7 @@ void D3D9Renderer::OneTimeInit()
     m_Device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
     m_Device->SetRenderState(D3DRS_SPECULARENABLE, true);
 
-    EnableMultiSaple(true);
-
-
-
+    EnableMultiSample(true);
 
     // テクスチャステージステート
     m_Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_MIRROR);
@@ -234,7 +233,6 @@ void D3D9Renderer::StartRender(bool bColor, bool bDepth, bool bStencil)
     if (!m_Device)
         return;
 
-    //ImGui::EndFrame();
     unsigned int buffers = 0;
     if (bColor) buffers |= D3DCLEAR_TARGET;
     if (bDepth) buffers |= D3DCLEAR_ZBUFFER;
@@ -274,7 +272,7 @@ void D3D9Renderer::EndRendering()
         return;
 
     m_Device->EndScene();
-    m_Device->Present(nullptr, nullptr, NULL, NULL);
+    m_Device->Present(nullptr, nullptr, nullptr, nullptr);
 
     m_renderingScene = false;
 }
@@ -284,15 +282,19 @@ void D3D9Renderer::SetMaterial(stMaterial* mat)
     if (!mat || !m_Device)
         return;
 
-    D3DMATERIAL9 m = {
-        mat->diffuseR, mat->diffuseG,
-        mat->diffuseB, mat->diffuseA,
-        mat->ambientR, mat->ambientG,
-        mat->ambientB, mat->ambientA,
-        mat->specularR, mat->specularG,
-        mat->specularB, mat->specularA,
-        mat->emissiveR, mat->emissiveG,
-        mat->emissiveB, mat->emissiveA,
+    const D3DMATERIAL9 m = {
+        {
+            mat->diffuseR, mat->diffuseG,mat->diffuseB, mat->diffuseA
+        },
+        {
+            mat->ambientR, mat->ambientG,mat->ambientB, mat->ambientA
+        },
+        {
+            mat->specularR, mat->specularG,mat->specularB, mat->specularA
+        },
+        {
+            mat->emissiveR, mat->emissiveG,mat->emissiveB, mat->emissiveA
+        },
         mat->power
     };
 
@@ -356,7 +358,7 @@ void D3D9Renderer::DisableLight(size_t index)
     m_Device->LightEnable(index, FALSE);
 }
 
-bool D3D9Renderer::SetMultiSaple(int32_t samples)
+bool D3D9Renderer::SetMultiSample(int32_t samples)
 {
     D3DMULTISAMPLE_TYPE type = D3DMULTISAMPLE_TYPE(samples);
 
@@ -369,6 +371,9 @@ bool D3D9Renderer::SetMultiSaple(int32_t samples)
         }
         else
         {
+#ifdef _DEBUG
+            std::cout << "SetMultiSample " << samples << " ERROR" << std::endl;
+#endif
             return false;
         }
     }
@@ -376,7 +381,7 @@ bool D3D9Renderer::SetMultiSaple(int32_t samples)
     return true;
 }
 
-void D3D9Renderer::EnableMultiSaple(bool samples)
+void D3D9Renderer::EnableMultiSample(bool samples)
 {
     if (samples)
     {
@@ -541,7 +546,6 @@ void D3D9Renderer::SetTransparent(RenderState state, TransperentState src, Trans
         default:
             m_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
             return;
-            break;
         }
 
         switch (dst)
@@ -835,7 +839,7 @@ void D3D9Renderer::SaveScreenShot(const char* file)
     m_Device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &surface);
     D3DXSaveSurfaceToFile(file, D3DXIFF_PNG, surface, NULL, NULL);
 
-    SAFE_RELEASE(surface);
+    SAFE_RELEASE(surface)
 }
 
 void D3D9Renderer::EnablePointSprites(float size, float min, float a, float b, float c)
@@ -938,9 +942,9 @@ void D3D9Renderer::CalculateOrthoMatrix(float zn, float zf)
 }
 
 int D3D9Renderer::CreateStaticBuffer(VertexType vType,
-    PrimType primType, size_t totalVerts,
-    size_t totalIndices, size_t stride, void** data,
-    size_t* indices, int* staticId)
+    PrimType primType, int32_t totalVerts,
+    int32_t totalIndices, int32_t stride, void** data,
+    int16_t* indices, int32_t* staticId)
 {
     void* ptr;
     stD3D9StaticBuffer staticBuffer;
@@ -954,19 +958,19 @@ int D3D9Renderer::CreateStaticBuffer(VertexType vType,
     if (totalIndices > 0)
     {
         if (FAILED(m_Device->CreateIndexBuffer(
-            sizeof(size_t) * totalIndices,
+            sizeof(int16_t) * totalIndices,
             D3DUSAGE_WRITEONLY,
             D3DFMT_INDEX16,
             D3DPOOL_DEFAULT,
             &staticBuffer.ibPtr, NULL)))
         {
             return UGP_FAIL;
-        };
+        }
 
         if (FAILED(staticBuffer.ibPtr->Lock(0, 0, &ptr, 0)))
             return UGP_FAIL;
 
-        memcpy(ptr, indices, sizeof(size_t) * totalIndices);
+        memcpy(ptr, indices, sizeof(int16_t) * totalIndices);
         staticBuffer.ibPtr->Unlock();
     }
     else
@@ -1054,15 +1058,15 @@ int D3D9Renderer::RenderStaticBuffer(int32_t staticId)
 
         case PrimType::TRIANGLE_LIST:
             if (FAILED(m_Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0,
-                0, m_staticBufferList[staticId].numVerts / 3,
-                0, m_staticBufferList[staticId].numIndices)))
+                0, m_staticBufferList[staticId].numVerts,
+                0, m_staticBufferList[staticId].numIndices / 3)))
                 return UGP_FAIL;
             break;
 
         case PrimType::TRIANGLE_STRIP:
             if (FAILED(m_Device->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0,
-                0, m_staticBufferList[staticId].numVerts / 2,
-                0, m_staticBufferList[staticId].numIndices)))
+                0, m_staticBufferList[staticId].numVerts,
+                0, m_staticBufferList[staticId].numIndices / 3)))
                 return UGP_FAIL;
             break;
 
@@ -1514,7 +1518,7 @@ void D3D9Renderer::StartImGuiFrame(bool enable)
         static bool msaa = 1;
         ImGui::Text("Multisample%d :%d", m_d3dpp.MultiSampleType, msaa);
         ImGui::Checkbox("Multisample4", &msaa);
-        EnableMultiSaple(msaa);
+        EnableMultiSample(msaa);
 
         ImGui::End();
     }

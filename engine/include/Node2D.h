@@ -28,7 +28,7 @@ public:
     Sprite() = default;
     ~Sprite() override;
 
-    Sprite(int32_t key, const std::string& tex_name);
+    Sprite(int32_t key, std::string tex_name);
 
     virtual Vector2f GetSize() { return m_xySize; }
     virtual float GetSizeX() { return m_xySize.x; }
