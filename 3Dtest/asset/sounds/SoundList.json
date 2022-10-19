@@ -1,0 +1,24 @@
+{
+    "BGM": [
+        {
+            "name": "menu_bgm",
+            "path": "menu.wav",
+            "type": "BGM",
+            "LoopCount": 255
+        },
+        {
+            "name": "game_bgm",
+            "path": "Phat Phrog Studios - Autopilot Engaged.wav",
+            "type": "BGM",
+            "LoopCount": 255
+        }
+    ],
+    "SFX": [
+        {
+            "name": "test_sfx",
+            "path": "test.wav",
+            "type": "SFX",
+            "LoopCount": 0
+        }
+    ]
+}

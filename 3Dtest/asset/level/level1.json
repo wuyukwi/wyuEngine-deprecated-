@@ -1,0 +1,52 @@
+{
+    "node": [
+        {
+            "type": "SpriteBackGround",
+            "layer": "0",
+            "texture": "game/bg0.jpg",
+            "name": "bg0",
+            "size": {
+                "x": 2,
+                "y": 1
+            },
+            "pos": {
+                "x": 2,
+                "y": 2,
+                "z": 0
+            },
+            "rollSpeed": {
+                "u": 0.0,
+                "v": -0.5
+            }
+        },
+        {
+            "type": "player",
+            "layer": "0",
+            "texture": "game/player01.png",
+            "name": "player",
+            "scalar": 0.7,
+            "pos": {
+                "x": 10,
+                "y": 2,
+                "z": 0
+            },
+            "animation": {
+                "texture": "game/player01.png",
+                "frame": {
+                    "u": 4,
+                    "v": 1
+                },
+                "name": "none",
+                "frameX": {
+                    "begin": 0,
+                    "end": 4
+                },
+                "frameY": {
+                    "begin": 0,
+                    "end": 1
+                },
+                "frameRate": 0.05
+            }
+        }
+    ]
+}
