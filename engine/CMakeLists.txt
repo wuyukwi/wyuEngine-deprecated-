@@ -44,12 +44,16 @@ target_link_libraries(${TARGET_NAME} PUBLIC ${dxguid_lib})
 
 target_link_libraries(${TARGET_NAME} PUBLIC xaudio2.lib)
 target_link_libraries(${TARGET_NAME} PUBLIC json11)
+
+if(OPENGL)
+	target_link_libraries(${TARGET_NAME} PUBLIC glfw)
+	target_link_libraries(${TARGET_NAME} PUBLIC glad)
+	target_link_libraries(${TARGET_NAME} PUBLIC opengl32.lib)
+	target_link_libraries(${TARGET_NAME} PUBLIC stb)
+	target_link_libraries(${TARGET_NAME} PUBLIC glm)
+endif()
+
 #opengl
-target_link_libraries(${TARGET_NAME} PUBLIC glfw)
-target_link_libraries(${TARGET_NAME} PUBLIC glad)
-target_link_libraries(${TARGET_NAME} PUBLIC opengl32.lib)
-target_link_libraries(${TARGET_NAME} PUBLIC stb)
-target_link_libraries(${TARGET_NAME} PUBLIC glm)
 
 #target_link_libraries(${TARGET_NAME} PUBLIC Jolt)
 

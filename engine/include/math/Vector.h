@@ -140,6 +140,11 @@ struct Vector3Type {
     {
         return sqrt(length2());
     }
+
+    T DotProduct(Vector3Type<T>& Vec3)
+    {
+        return this->x * Vec3.x + this->y * Vec3.y + this->z * Vec3.z;
+    }
 };
 
 typedef Vector3Type<float> Vector3f;
@@ -298,4 +303,15 @@ inline Quaternion operator*(const Quaternion q1, const Quaternion q2)
 
     const Quaternion ret(v1v2.x, v1v2.y, v1v2.z, real);
     return ret;
+}
+
+inline Vector3f ComputeNormal(Vector3f& p0, Vector3f& p1, Vector3f& p2)
+{
+    Vector3f u = p1 - p0;
+    Vector3f v = p2 - p0;
+
+    Vector3f nor = CrossProduct(u, v);
+    Normalize(nor);
+
+    return nor;
 }

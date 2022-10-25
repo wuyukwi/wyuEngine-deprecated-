@@ -40,7 +40,7 @@ public:
     virtual void ClearBuffers(bool bColor, bool bDepth, bool bStencil) = 0;
     virtual void EndRendering() = 0;
 
-    virtual void SetMaterial(stMaterial* mat) = 0;
+    virtual void SetMaterial(Material& mat) = 0;
     virtual void SetLight(stLight& light, uint32_t index) = 0;
     virtual void DisableLight(size_t index) = 0;
 

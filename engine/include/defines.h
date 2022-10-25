@@ -15,6 +15,8 @@
 #include <cstdio>
 #include <cmath>
 
+#include "math/Vector.h"
+
 #define SAFE_DELETE( p )       { if( p ) { delete ( p );     ( p ) = nullptr; } }
 #define SAFE_DELETE_ARRAY( p ) { if( p ) { delete[] ( p );   ( p ) = nullptr; } }
 #define SAFE_RELEASE( p )      { if( p ) { ( p )->Release(); ( p ) = nullptr; } }
@@ -102,6 +104,20 @@ inline unsigned long COLOR_RGBA(float r, float g, float b, float a)
     return (dwA << 24) | (dwR << 16) | (dwG << 8) | dwB;
 }
 
+constexpr float ColorScalar = 1.0f / 255.0f;
+inline Color ColorIntTransFloat(int32_t r, int32_t g, int32_t b, int32_t a)
+{
+    return Color(float(r * ColorScalar), float(g * ColorScalar), float(b * ColorScalar), float(a * ColorScalar));
+}
+
+const Color      WHITE(ColorIntTransFloat(255, 255, 255, 0));
+const Color      BLACK(ColorIntTransFloat(0, 0, 0, 0));
+const Color        RED(ColorIntTransFloat(255, 0, 0, 0));
+const Color      GREEN(ColorIntTransFloat(0, 255, 0, 0));
+const Color       BLUE(ColorIntTransFloat(0, 0, 255, 0));
+const Color     YELLOW(ColorIntTransFloat(255, 255, 0, 0));
+const Color       CYAN(ColorIntTransFloat(0, 255, 255, 0));
+const Color    MAGENTA(ColorIntTransFloat(255, 0, 255, 0));
 
 // Typedefs and enumerations.
 typedef long VertexType;

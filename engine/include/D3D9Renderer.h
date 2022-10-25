@@ -79,7 +79,7 @@ public:
     void ClearBuffers(bool bColor, bool bDepth, bool bStencil) override;
     void EndRendering() override;
 
-    void SetMaterial(stMaterial* mat) override;
+    void SetMaterial(Material& mat) override;
     void SetLight(stLight& light, uint32_t index) override;
     void DisableLight(size_t index) override;
 

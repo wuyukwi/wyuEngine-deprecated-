@@ -9,6 +9,9 @@
 **********************************************************************************/
 
 #include"XMesh.h"
+
+#include <iostream>
+
 #include"XStructures.h"
 #include"defines.h"
 
@@ -54,8 +57,14 @@ bool CXModel::LoadXFile(const std::string& file_name)
 
         // Frame階層内のすべてのメッシュの境界球を計算します。
         D3DXFrameCalculateBoundingSphere(m_pRoot, &m_center, &m_radius);
+        D3DXCreateSphere(m_pDevice,
+            m_radius,
+            10,
+            10,
+            &m_pSphere1,
+            nullptr);
+        // CreateBounding(m_pRoot, m_pRoot);
     }
-
     // アニメーション初期化
     SetAnimation(0);
 
@@ -126,6 +135,8 @@ void CXModel::Render()
 {
     if (m_pRoot)
         DrawFrame(m_pRoot);
+
+    /*   m_pSphere1->DrawSubset(0);*/
 }
 
 void CXModel::SetAnimation(unsigned int index)
@@ -178,10 +189,11 @@ void CXModel::UpdateFrameMatrices(LPD3DXFRAME pFrameBase, LPD3DXMATRIX pParentMa
 
     D3DXMatrixMultiply(&pFrame->finalMatrix, &pFrame->TransformationMatrix, pParentMatrix);
 
-    //if (pFrame->pFrameSibling != nullptr)
-    UpdateFrameMatrices(pFrame->pFrameSibling, pParentMatrix);
-    //if (pFrame->pFrameSibling != nullptr)
-    UpdateFrameMatrices(pFrame->pFrameFirstChild, &pFrame->finalMatrix);
+    if (pFrame->pFrameSibling != nullptr)
+        UpdateFrameMatrices(pFrame->pFrameSibling, pParentMatrix);
+
+    if (pFrame->pFrameFirstChild != nullptr)
+        UpdateFrameMatrices(pFrame->pFrameFirstChild, &pFrame->finalMatrix);
 }
 
 void CXModel::DrawFrame(LPD3DXFRAME pFrame)
@@ -240,7 +252,7 @@ void CXModel::DrawMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBase, LPD3DXFR
 
             if (m_caps.MaxVertexBlendMatrices >= NumBlend + 1)
             {
-                // まず、ブレンドウェイトの現在のセットのワールドマトリックスを計算し、ブレンド数の正確なカウントを取得します
+                // まず、ブレンドウェイトの現在のセットのワールドマトリックスを計算し、フレームの正確なカウントを取得します
                 for (DWORD i = 0; i < pMeshContainer->NumInfl; ++i)
                 {
                     CountMatrixIndex = pBoneComb[iAttrib].BoneId[i];
@@ -266,6 +278,7 @@ void CXModel::DrawMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBase, LPD3DXFR
                 pMeshContainer->MeshData.pMesh->DrawSubset(iAttrib);
             }
         }
+        this->DrwaBounding(pMeshContainer->Name);
         m_pDevice->SetRenderState(D3DRS_VERTEXBLEND, 0);
     }
     else  // 普通のメッシュ、マテリアルを設定した後に描画するだけ
@@ -277,6 +290,85 @@ void CXModel::DrawMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBase, LPD3DXFR
             m_pDevice->SetMaterial(&pMeshContainer->pMaterials[iMaterial].MatD3D);
             m_pDevice->SetTexture(0, pMeshContainer->ppTextures[iMaterial]);
             pMeshContainer->MeshData.pMesh->DrawSubset(iMaterial);
+
+            this->DrwaBounding(pMeshContainer->Name);
         }
     }
+}
+
+bool CXModel::CreateBounding(LPD3DXFRAME pFrameBase, LPD3DXFRAME pFrameRoot)
+{
+    if (pFrameBase->pMeshContainer != nullptr)
+    {
+        if (pFrameBase->pMeshContainer->MeshData.pMesh != nullptr)
+        {
+            LPD3DXMESH sphere, box;
+            uint8_t* v = nullptr;
+            pFrameBase->pMeshContainer->MeshData.pMesh->LockVertexBuffer(0, (void**)&v);
+
+            /*     D3DXComputeBoundingSphere(
+                     (D3DXVECTOR3*)v,
+                     pFrameBase->pMeshContainer->MeshData.pMesh->GetNumVertices(),
+                     pFrameBase->pMeshContainer->MeshData.pMesh->GetNumBytesPerVertex(),
+                     &m_center,
+                     &m_radius
+                 );
+
+                 D3DXCreateSphere(m_pDevice,
+                     m_radius,
+                     10,
+                     10,
+                     &sphere,
+                     nullptr);
+
+                 m_pSphere.insert(std::pair<std::string, LPD3DXMESH>(pFrameBase->Name, sphere));*/
+
+            D3DXComputeBoundingBox(
+                (D3DXVECTOR3*)v,
+                pFrameBase->pMeshContainer->MeshData.pMesh->GetNumVertices(),
+                pFrameBase->pMeshContainer->MeshData.pMesh->GetNumBytesPerVertex(),
+                &m_min,
+                &m_max);
+
+            D3DXCreateBox(m_pDevice,
+                m_max.x - m_min.x,
+                m_max.y - m_min.y,
+                m_max.z - m_min.z,
+                &box,
+                nullptr);
+            m_pBox.insert(std::pair<std::string, LPD3DXMESH>(pFrameBase->pMeshContainer->Name, box));
+
+            pFrameBase->pMeshContainer->MeshData.pMesh->UnlockVertexBuffer();
+        }
+    }
+
+    if (pFrameBase->pFrameSibling != nullptr)
+    {
+        if (CreateBounding(pFrameBase->pFrameSibling, pFrameRoot))
+            return false;
+    }
+
+    if (pFrameBase->pFrameFirstChild != nullptr)
+    {
+        if (CreateBounding(pFrameBase->pFrameFirstChild, pFrameRoot))
+            return false;
+    }
+
+    return true;
+}
+
+void CXModel::DrwaBounding(const std::string& name)
+{
+    const auto it_sphere = m_pSphere.find(name);
+    if (it_sphere != m_pSphere.end())
+    {
+        it_sphere->second->DrawSubset(0);
+    }
+
+    const auto it_box = m_pBox.find(name);
+    if (it_box != m_pBox.end())
+    {
+        it_box->second->DrawSubset(0);
+    }
+
 }

@@ -125,6 +125,11 @@ Vector3f Node3D::GetRotation() const
     return m_rotation;
 }
 
+void Node3D::SetMaterial(Material& mat)
+{
+    m_material = mat;
+}
+
 // ModelNode
 ModelNode::ModelNode(const std::string& file_name)
 {
@@ -404,16 +409,17 @@ bool TerrainNode::CreateStaticBuffer()
         }
         i++; // 次の行
     }
-    for (size_t i = 0; i < m_numVertices; i++)
-    {
-        std::cout << "m_numVertices" << i << ":" << "(" << vertex[i].tex.u << "," << vertex[i].tex.v << ")" << std::endl;
-    }
+    //for (size_t i = 0; i < m_numVertices; i++)
+    //{
+    //    std::cout << "m_numVertices" << i << ":" << "(" << vertex[i].tex.u << "," << vertex[i].tex.v << ")" << std::endl;
+    //}
 
     const int32_t numIndices = m_numTriangles * 3;
     const auto indices = new int16_t[numIndices];
 
     // クワッドを構成する 2 つの三角形を表す 6 つのインデックスのグループの先頭へのインデックス
     int32_t baseIndex = 0;
+
 
     // ループして各クワッドの三角形を計算します
     for (int32_t col = 0; col < m_numCellsPerCol; col++)
@@ -423,10 +429,20 @@ bool TerrainNode::CreateStaticBuffer()
             indices[baseIndex] = col * m_numVertsPerRow + row;
             indices[baseIndex + 1] = col * m_numVertsPerRow + row + 1;
             indices[baseIndex + 2] = (col + 1) * m_numVertsPerRow + row;
+            //　法線の計算
+            Vector3f nor = ComputeNormal(
+                vertex[indices[baseIndex]].pos,
+                vertex[indices[baseIndex] + 1].pos,
+                vertex[indices[baseIndex] + 2].pos);
+            vertex[indices[baseIndex]].nor = vertex[indices[baseIndex] + 1].nor = vertex[indices[baseIndex] + 2].nor = nor;
+
 
             indices[baseIndex + 3] = (col + 1) * m_numVertsPerRow + row;
             indices[baseIndex + 4] = col * m_numVertsPerRow + row + 1;
             indices[baseIndex + 5] = (col + 1) * m_numVertsPerRow + row + 1;
+            //　法線の計算
+            nor = ComputeNormal(vertex[indices[baseIndex] + 3].pos, vertex[indices[baseIndex] + 4].pos, vertex[indices[baseIndex] + 5].pos);
+            vertex[indices[baseIndex] + 3].nor = vertex[indices[baseIndex] + 4].nor = vertex[indices[baseIndex] + 5].nor = nor;
 
             // 次の列
             baseIndex += 6;
@@ -456,6 +472,7 @@ bool TerrainNode::CreateStaticBuffer()
 void TerrainNode::Render()
 {
     g_pEngine->GetRenderer()->SetWorldMatrix(m_worldMatrix);
+    g_pEngine->GetRenderer()->SetMaterial(m_material);
     g_pEngine->GetRenderer()->SetTextureAlphaBlend(true);
     g_pEngine->GetRenderer()->ApplyTexture(1, m_texId);
     g_pEngine->GetRenderer()->RenderStaticBuffer(m_staticId);

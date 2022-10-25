@@ -8,6 +8,7 @@ set(BUILD_SHARED_LIBS OFF)
 
 # Build Options.
 option(IMGUI "Build imgui" ON)
+option(OPENGL "OpenGl Enable" OFF)
 
 include(CMakeDependentOption)
 
@@ -33,5 +34,8 @@ add_subdirectory(engine)
 #add_subdirectory(game)
 add_subdirectory(3Dtest)
 
-add_subdirectory(test)
-add_subdirectory(LearnOpenGl)
+#add_subdirectory(test)
+if(OPENGL)
+	add_subdirectory(LearnOpenGl)
+endif()
+

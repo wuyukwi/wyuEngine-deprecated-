@@ -1,5 +1,6 @@
 ﻿#include "Node.h"
 #include "math/Matrix.h"
+#include "material.h"
 
 class Node3D :public Node
 {
@@ -25,6 +26,8 @@ public:
     virtual void AddRotation(Vector3f rotation);
     virtual Vector3f GetRotation() const;
 
+    virtual void SetMaterial(Material& mat);
+
 
 protected:
 
@@ -37,6 +40,7 @@ protected:
     Matrix4x4f m_translationMatrix{}; // Translation matrix.
     Matrix4x4f m_rotationMatrix{};    // Rotation matrix.
 
+    Material m_material{};
 };
 
 class ModelNode :public Node3D
