@@ -277,25 +277,22 @@ void D3D9Renderer::EndRendering()
     m_renderingScene = false;
 }
 
-void D3D9Renderer::SetMaterial(stMaterial* mat)
+void D3D9Renderer::SetMaterial(Material& mat)
 {
-    if (!mat || !m_Device)
-        return;
-
     const D3DMATERIAL9 m = {
         {
-            mat->diffuseR, mat->diffuseG,mat->diffuseB, mat->diffuseA
+            mat.Diffuse.r, mat.Diffuse.g, mat.Diffuse.b,  mat.Diffuse.a
         },
         {
-            mat->ambientR, mat->ambientG,mat->ambientB, mat->ambientA
+            mat.Ambient.r, mat.Ambient.g,mat.Ambient.b, mat.Ambient.a
         },
         {
-            mat->specularR, mat->specularG,mat->specularB, mat->specularA
+            mat.Specular.r, mat.Specular.g,mat.Specular.b, mat.Specular.a
         },
         {
-            mat->emissiveR, mat->emissiveG,mat->emissiveB, mat->emissiveA
+            mat.Emissive.r, mat.Emissive.g,mat.Emissive.b, mat.Emissive.a
         },
-        mat->power
+        mat.power
     };
 
     m_Device->SetMaterial(&m);

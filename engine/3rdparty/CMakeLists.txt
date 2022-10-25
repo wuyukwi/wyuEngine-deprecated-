@@ -13,7 +13,9 @@ endif()
 set_target_properties(json11 PROPERTIES FOLDER "3rdparty")
 set_target_properties(imgui PROPERTIES FOLDER "3rdparty")
 
-add_subdirectory(opengl)
+if(OPENGL)
+	add_subdirectory(opengl)
+endif()
 
 #if(NOT TARGET Jolt)
 #    option(TARGET_HELLO_WORLD "" OFF)

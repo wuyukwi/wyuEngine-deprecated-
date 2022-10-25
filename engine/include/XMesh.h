@@ -12,6 +12,7 @@
 #define _X_ANIMATED_MODEL_H_
 
 #include <string>
+#include <unordered_map>
 
 #include"XStructures.h"
 
@@ -66,6 +67,9 @@ private:
     void DrawFrame(LPD3DXFRAME frame);
     void DrawMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBase, LPD3DXFRAME pFrameBase);
 
+    bool CreateBounding(LPD3DXFRAME pFrameBase, LPD3DXFRAME pFrameRoot);
+    void DrwaBounding(const std::string& name);
+
 private:
     // D3D デバイス
     LPDIRECT3DDEVICE9 m_pDevice;
@@ -84,8 +88,15 @@ private:
     stD3DContainerDerived* m_currentContainer;
 
     // バウンディングスフィア。
+    std::unordered_map<std::string, LPD3DXMESH> m_pSphere;
+    LPD3DXMESH m_pSphere1;
     D3DXVECTOR3 m_center;
     float m_radius;
+
+    // バウンディングボックス
+    std::unordered_map<std::string, LPD3DXMESH> m_pBox;
+    D3DXVECTOR3 m_min;
+    D3DXVECTOR3 m_max;
 
     // アニメーション変数。
     unsigned int m_currentAni;

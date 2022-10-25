@@ -65,22 +65,25 @@ HRESULT CAllocateHierarchy::GenerateSkinnedMesh(IDirect3DDevice9* pd3dDevice, st
 HRESULT CAllocateHierarchy::CreateFrame(LPCSTR Name, LPD3DXFRAME* ppNewFrame)
 {
     HRESULT hr = S_OK;
-    stD3DFrameDerived* pFrame;
 
     *ppNewFrame = nullptr;
 
-    pFrame = new stD3DFrameDerived;
+    auto pFrame = new stD3DFrameDerived;
     if (pFrame == nullptr)
     {
         hr = E_OUTOFMEMORY;
-        goto e_Exit;
+        delete pFrame;
+        return hr;
     }
 
     hr = AllocateName(Name, &pFrame->Name);
     if (FAILED(hr))
-        goto e_Exit;
+    {
+        delete pFrame;
+        return hr;
+    }
 
-    // frameのメンバーを初期化します
+    // frameのマトリックスを初期化します
     D3DXMatrixIdentity(&pFrame->TransformationMatrix);
     D3DXMatrixIdentity(&pFrame->finalMatrix);
 
@@ -91,9 +94,7 @@ HRESULT CAllocateHierarchy::CreateFrame(LPCSTR Name, LPD3DXFRAME* ppNewFrame)
     *ppNewFrame = pFrame;
     pFrame = nullptr;
 
-e_Exit:
-    delete pFrame;
-    return hr;
+    return S_OK;
 }
 
 //--------------------------------------------------------------------------------------

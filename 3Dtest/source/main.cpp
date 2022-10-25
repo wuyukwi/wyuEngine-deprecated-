@@ -8,7 +8,10 @@
 
 **********************************************************************************/
 
-#include "main.h"
+#include "gameEngine.h"
+#include "MenuScene.h"
+#include "GameScene.h"
+#include "GameManager.h"
 
 gameEngine* g_pEngine = nullptr;
 

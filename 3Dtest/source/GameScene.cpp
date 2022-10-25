@@ -2,7 +2,8 @@
 #include <functional>
 
 #include "GameScene.h"
-#include "main.h"
+
+#include "gameEngine.h"
 #include "json11.hpp"
 
 using namespace std;
@@ -99,9 +100,12 @@ void GameScene::Tick(float delta)
     //ImGui::Text("XINPUT_GAMEPAD_A Down: %d", aup);
     //ImGui::Text("XINPUT_GAMEPAD_A Down t: %d", bup);
     //ImGui::Text("pInput->KeyDown(DIK_J T: %d", cup);
-
-
-
+    static Color lightColor(1.0f, 1.0f, 1.0f, 1.0f);
+    static Vector3f lightDir(1.0f, -1.0f, 1.0f);
+    ImGui::ColorEdit4("light color", lightColor);
+    ImGui::SliderFloat3("light dir", lightDir, -1.0f, 1.0f);
+    m_light.InitDirectionalLight(lightDir, lightColor);
+    g_pEngine->GetRenderer()->SetLight(m_light, 0);
 
     auto look = m_camera->GetCameraLook();
     auto pos = m_camera->GetCameraPos();
@@ -113,17 +117,17 @@ void GameScene::Tick(float delta)
     ImGui::Text("up(%3f,%3f,%3f", up.x, up.y, up.z);
     ImGui::Text("pos(%3f,%3f,%3f", pos.x, pos.y, pos.z);
 
-    static float ts[3];
-    ImGui::SliderFloat3("ts", &ts[0], -100.0f, 100.0f);
-    m_model->SetTranslation(ts[0], ts[1], ts[2]);
-    m_ani3D->SetTranslation(ts[0], ts[1], ts[2]);
+    static Vector3f ts;
+    ImGui::SliderFloat3("ts", ts, -100.0f, 100.0f);
+    m_model->SetTranslation(ts);
+    m_ani3D->SetTranslation(ts);
     Vector3f Ts = m_model->GetTranslation();
     ImGui::Text("ts %f %f %f", Ts.x, Ts.y, Ts.z);
 
-    static float rot[3];
-    ImGui::SliderFloat3("rot", &rot[0], -100.0f, 100.0f);
-    m_model->SetRotation(rot[0], rot[1], rot[2]);
-    m_ani3D->SetRotation(rot[0], rot[1], rot[2]);
+    static Vector3f rot;
+    ImGui::SliderFloat3("rot", rot, -100.0f, 100.0f);
+    m_model->SetRotation(rot);
+    m_ani3D->SetRotation(rot);
     Vector3f Rot = m_model->GetRotation();
     ImGui::Text("ts %f %f %f", Rot.x, Rot.y, Rot.z);
 
@@ -210,7 +214,7 @@ void GameScene::Tick(float delta)
     }
 
 
-    m_camera->SetPosY(m_terrain->getHeight(m_camera->GetCameraPos().x, m_camera->GetCameraPos().y) + 5.0f);
+    // m_camera->SetPosY(m_terrain->getHeight(m_camera->GetCameraPos().x, m_camera->GetCameraPos().y) + 5.0f);
 
     Scene::Tick(delta);
 }
